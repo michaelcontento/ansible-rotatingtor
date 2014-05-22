@@ -1,0 +1,15 @@
+- name: Install haproxy and tor
+  apt:
+    pkg: "{{ item }}"
+    state: present
+  with_items:
+  - haproxy
+  - tor
+
+- name: Check if delegated exists
+  command: test -e /usr/local/bin/delegated
+  ignore_errors: True
+  register: delegated_check
+
+- include: delegated.yml
+  when: delegated_check.rc != 0

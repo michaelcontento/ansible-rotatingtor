@@ -1,0 +1,24 @@
+global
+    maxconn 256
+
+defaults
+    mode http
+    timeout connect 5000ms
+    timeout client 50000ms
+    timeout server 50000ms
+
+frontend rotatingproxies
+    bind localhost:{{ rotatingtor_haproxy_http_port }}
+    default_backend tors
+    option http_proxy
+
+backend tors
+    option http_proxy
+    {% for n in range(rotatingtor_worker) %}
+    server tor{{ n }} localhost:{{ rotatingtor_delegated_port }}{% if n < 10 %}0{% endif %}{{ n }}
+    {% endfor %}
+    balance roundrobin
+
+listen admin
+    bind localhost:{{ rotatingtor_haproxy_admin_port }}
+    stats enable

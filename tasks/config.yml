@@ -1,0 +1,15 @@
+- name: Generate haproxy configuration
+  sudo_user: "{{ rotatingtor_user }}"
+  template:
+    src: haproxy.cfg.j2
+    dest: "{{ rotatingtor_data_dir }}/haproxy.cfg"
+    backup: no
+
+- name: Configure supervisord
+  template:
+    src: supervisord.conf.j2
+    dest: "{{ supervisord_additional_conf_dir }}/rotatingtor.conf"
+    backup: no
+  notify:
+  - reread supervisord
+  - update supervisord

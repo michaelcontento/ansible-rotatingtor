@@ -1,0 +1,40 @@
+[program:tor]
+user = {{ rotatingtor_user }}
+command = tor --CookieAuthentication 0 --HashedControlPassword "" --ControlPort {{ rotatingtor_tor_control_port }}%(process_num)02d --SocksPort {{ rotatingtor_tor_socks_port }}%(process_num)02d --DataDirectory {{ rotatingtor_data_dir }}/tor_%(process_num)02d
+
+numprocs = {{ rotatingtor_worker }}
+process_name = %(program_name)s_%(process_num)s
+
+autostart = true
+autorestart = true
+
+stdout_logfile = {{ rotatingtor_log_dir }}/tor_%(process_num)s.stdout.log
+stderr_logfile = {{ rotatingtor_log_dir }}/tor_%(process_num)s.stderr.log
+
+
+[program:delegated]
+user = {{ rotatingtor_user }}
+command = delegated -fv -P{{ rotatingtor_delegated_port }}%(process_num)02d SERVER=http SOCKS=localhost:{{ rotatingtor_tor_socks_port }}%(process_num)02d
+
+numprocs = {{ rotatingtor_worker }}
+process_name = %(program_name)s_%(process_num)s
+
+autostart = true
+autorestart = true
+
+stdout_logfile = {{ rotatingtor_log_dir }}/delegated_%(process_num)s.stdout.log
+stderr_logfile = {{ rotatingtor_log_dir }}/delegated_%(process_num)s.stderr.log
+
+
+[program:haproxy]
+user = {{ rotatingtor_user }}
+command = haproxy -f {{ rotatingtor_data_dir }}/haproxy.cfg
+
+autostart = true
+autorestart = true
+
+stdout_logfile = {{ rotatingtor_log_dir }}/haproxy.stdout.log
+stderr_logfile = {{ rotatingtor_log_dir }}/haproxy.stderr.log
+
+[group:rotatingtor]
+programs = tor, delegated, haproxy

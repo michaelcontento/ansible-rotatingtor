@@ -1,0 +1,25 @@
+- name: Download the delegated source release if not yet present
+  get_url:
+    url: "{{ rotatingtor_delegated_url }}"
+    dest: "{{ rotatingtor_delegated_tmp }}.tar.gz"
+
+- name: Unpack the compressed delegated source
+  command: tar -xvzf {{ rotatingtor_delegated_tmp }}.tar.gz chdir=/tmp creates={{ rotatingtor_delegated_tmp }}/README
+
+- name: Configure ADMIN email
+  lineinfile:
+    dest: "{{ rotatingtor_delegated_tmp }}/src/Makefile"
+    regexp: "^ADMIN ="
+    line: "ADMIN = {{ rotatingtor_delegated_email }}"
+
+- name: Patch missing include
+  lineinfile:
+    dest: "{{ rotatingtor_delegated_tmp }}/maker/_-forkpty.c"
+    insertbefore: BOF
+    line: "#include <util.h>"
+
+- name: Compile the delegated source
+  shell: cd {{ rotatingtor_delegated_tmp }} && make
+
+- name: Install delegated
+  shell: cp {{ rotatingtor_delegated_tmp }}/src/delegated /usr/local/bin/delegated

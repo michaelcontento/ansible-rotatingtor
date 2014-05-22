@@ -1,0 +1,13 @@
+rotatingtor_user: rotatingtor
+rotatingtor_worker: 10
+rotatingtor_data_dir: /home/rotatingtor/data
+rotatingtor_log_dir: /home/rotatingtor/log
+rotatingtor_tor_control_port: 71
+rotatingtor_tor_socks_port: 72
+rotatingtor_delegated_port: 73
+rotatingtor_haproxy_http_port: 7400
+rotatingtor_haproxy_admin_port: 7401
+rotatingtor_delegated_version: 9.9.7
+rotatingtor_delegated_url: "ftp://ftp.delegate.org/pub/DeleGate/delegate{{ rotatingtor_delegated_version }}.tar.gz"
+rotatingtor_delegated_email: foo@bar.net
+rotatingtor_delegated_tmp: "/tmp/delegate{{ rotatingtor_delegated_version }}"

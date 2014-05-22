@@ -1,0 +1,12 @@
+galaxy_info:
+  author: Michael Contento
+  min_ansible_version: 1.4
+  platforms:
+  - name: Ubuntu
+    versions:
+    - all
+  categories:
+  - system
+
+dependencies:
+  - zenoamaro.supervisord

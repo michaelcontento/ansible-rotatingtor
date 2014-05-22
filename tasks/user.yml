@@ -1,0 +1,17 @@
+- name: Create user
+  user:
+    name: "{{ rotatingtor_user }}"
+    shell: /bin/bash
+
+- name: Create log directory
+  sudo_user: "{{ rotatingtor_user }}"
+  file:
+    name: "{{ rotatingtor_log_dir }}"
+    state: directory
+
+- name: Create data directories
+  sudo_user: "{{ rotatingtor_user }}"
+  file:
+    name: "{{ rotatingtor_data_dir }}/tor_{{ item }}"
+    state: directory
+  with_sequence: start=0 count={{ rotatingtor_worker }}
